@@ -1,4 +1,4 @@
-import { City, Cop, Criminal, Vehicle } from "./enitities/model";
+import { City, Cop, Criminal, Vehicle } from "./model";
 
 export const cities: City[] = [
   {

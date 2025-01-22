@@ -1,18 +1,12 @@
 import express from "express";
-import { cities, criminal, initialCops, vehicles } from "../db";
-import { Criminal } from "../enitities/model";
+import { cities, criminal, vehicles } from "../enitities/db";
+import { gameState } from "../enitities/game-state";
+import { Cop } from "../enitities/model";
 const router = express.Router();
 
 router.get("/criminal", (req, res) => {
   try {
-    const randomCity = cities[Math.floor(Math.random() * cities.length)];
-
-    const criminalWithHideout: Criminal = {
-      ...criminal,
-      cityHiding: randomCity,
-    };
-
-    res.status(200).json(criminalWithHideout);
+    res.status(200).json(gameState.getCriminal());
   } catch (error) {
     console.error("Failed to fetch criminal", error);
     throw error;
@@ -30,37 +24,81 @@ router.get("/cities", (req, res) => {
 
 router.get("/cop", (req, res) => {
   try {
-    res.status(200).json(initialCops);
+    res.status(200).json(gameState.getCops());
   } catch (error) {
     console.error("Failed to fetch cops", error);
     throw error;
   }
 });
 
-router.post("/cop/select-city", (req, res) => {
+router.post("/investigation", (req, res) => {
   try {
-    const { copdId, cityId } = req.body;
+    const cops: Cop[] = req.body;
+    const criminal = gameState.getCriminal();
 
-    const selectedCop = initialCops.find((cop) => cop.id === copdId);
-    if (!selectedCop) {
-      res.status(404).json({ message: "Cop not found" });
-      return;
+    if (!criminal.cityHiding) {
+      return res.status(400).json({
+        success: false,
+        message: "Criminal location not set",
+        winner: null,
+      });
     }
 
-    const selectedCity = cities.find((city) => city.id === cityId);
-    if (!selectedCity) {
-      res.status(404).json({ message: "City not found" });
-      return;
+    const winner = cops.find((cop) => {
+      const correctCity = cop.selectedCity?.id === criminal.cityHiding?.id;
+
+      const hasEnoughRange = cop.selectedVehicle
+        ? cop.selectedVehicle.range >= (cop.selectedCity?.distance ?? 0) * 2
+        : false;
+
+      return correctCity && hasEnoughRange;
+    });
+
+    if (winner) {
+      return res.status(200).json({
+        success: true,
+        message: `${winner.name} caught the criminal in ${criminal.cityHiding.name}!`,
+        winner: winner,
+        gameStatus: {
+          criminal: criminal,
+          correctCity: criminal.cityHiding.name,
+          requiredRange: criminal.cityHiding.distance * 2,
+        },
+      });
     }
 
-    selectedCop.selectedCity = selectedCity;
+    const hints = cops.map((cop) => {
+      const cityMatch = cop.selectedCity?.id === criminal.cityHiding?.id;
+      const requiredRange = criminal.cityHiding?.distance
+        ? criminal.cityHiding.distance * 2
+        : 0;
+      const vehicleRange = cop.selectedVehicle?.range ?? 0;
 
-    console.log("Selected Cop", selectedCop);
+      if (cityMatch && vehicleRange < requiredRange) {
+        return `${cop.name} found the criminal but vehicle range insufficient (needs ${requiredRange}km)`;
+      } else if (cityMatch) {
+        return `${cop.name} was in the right city but something went wrong`;
+      }
+      return `${cop.name} searched the wrong location`;
+    });
 
-    res.status(200).json(selectedCop);
+    return res.status(200).json({
+      success: false,
+      message: "The criminal escaped!",
+      hints: hints,
+      gameStatus: {
+        criminal: criminal,
+        correctCity: criminal.cityHiding.name,
+        requiredRange: criminal.cityHiding.distance * 2,
+      },
+    });
   } catch (error) {
-    console.error("Failed to add cop", error);
-    throw error;
+    console.error("Investigation failed:", error);
+    res.status(500).json({
+      success: false,
+      message: "Investigation failed due to internal error",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 });
 
