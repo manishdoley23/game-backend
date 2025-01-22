@@ -33,5 +33,5 @@ export interface GameState {
   criminalLocation: string | null; // city id
   cops: Cop[];
   status: "NOT_STARTED" | "IN_PROGRESS" | "WON" | "LOST";
-  winner: string | null; // cop id who caught the criminal
+  winner: string | null;
 }

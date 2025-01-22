@@ -33,3 +33,4 @@ class GameState {
 }
 
 export const gameState = new GameState();
+export type GameStateType = typeof gameState;
