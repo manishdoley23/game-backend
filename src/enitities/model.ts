@@ -3,7 +3,7 @@ export interface City {
   name: string;
   distance: number;
   description: string;
-  imrSrc: string;
+  imgSrc: string;
 }
 
 export interface Vehicle {
@@ -17,15 +17,15 @@ export interface Vehicle {
 export interface Cop {
   id: string;
   name: string;
-  selectedCity: string | null;
-  selectedVehicle: string | null;
+  selectedCity: City | null;
+  selectedVehicle: Vehicle | null;
   imgSrc: string;
 }
 
 export interface Criminal {
   id: string;
   name: string;
-  cityHiding: string | null;
+  cityHiding: City | null;
   imgSrc: string;
 }
 

@@ -7,7 +7,7 @@ export const cities: City[] = [
     distance: 60,
     description:
       "Neon Oasis - Glowing alleys and rooftop races, powered by solar energy.",
-    imrSrc: "https://i.imgur.com/fIssQzT.png",
+    imgSrc: "https://i.imgur.com/fIssQzT.png",
   },
   {
     id: "lihaspur",
@@ -15,7 +15,7 @@ export const cities: City[] = [
     distance: 50,
     description:
       "Misty Labyrinth - Ancient temples shrouded in fog, whispers of forgotten tech.",
-    imrSrc: "https://i.imgur.com/WrWHzzE.png",
+    imgSrc: "https://i.imgur.com/WrWHzzE.png",
   },
   {
     id: "narmis",
@@ -23,7 +23,7 @@ export const cities: City[] = [
     distance: 40,
     description:
       "Steel Jungle - Towering skyscrapers and hidden underground networks.",
-    imrSrc: "https://i.imgur.com/V5aYwsG.png",
+    imgSrc: "https://i.imgur.com/V5aYwsG.png",
   },
   {
     id: "shekharvati",
@@ -31,7 +31,7 @@ export const cities: City[] = [
     distance: 30,
     description:
       "Sun-Kissed Valley - Rolling hills and forgotten mining tunnels.",
-    imrSrc: "https://i.imgur.com/5QP9jTf.png",
+    imgSrc: "https://i.imgur.com/5QP9jTf.png",
   },
   {
     id: "nuravgram",
@@ -39,7 +39,7 @@ export const cities: City[] = [
     distance: 20,
     description:
       "Quirky Village - Talking robots and malfunctioning AI guardians.",
-    imrSrc: "https://i.imgur.com/lhVSW8s.png",
+    imgSrc: "https://i.imgur.com/lhVSW8s.png",
   },
 ];
 
