@@ -15,15 +15,17 @@ export async function startInvestigation(req: Request, res: Response) {
       });
     }
 
-    const winner = cops.find((cop) => {
-      const correctCity = cop.selectedCity?.id === criminal.cityHiding?.id;
+    const winner =
+      cops &&
+      cops.find((cop) => {
+        const correctCity = cop.selectedCity?.id === criminal.cityHiding?.id;
 
-      const hasEnoughRange = cop.selectedVehicle
-        ? cop.selectedVehicle.range >= (cop.selectedCity?.distance ?? 0) * 2
-        : false;
+        const hasEnoughRange = cop.selectedVehicle
+          ? cop.selectedVehicle.range >= (cop.selectedCity?.distance ?? 0) * 2
+          : false;
 
-      return correctCity && hasEnoughRange;
-    });
+        return correctCity && hasEnoughRange;
+      });
 
     if (winner) {
       return res.status(200).json({
